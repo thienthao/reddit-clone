@@ -10,8 +10,8 @@ import com.example.reddit_clone.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String token = generateverificationToken(user);
+        String token = generateVerificationToken(user);
         mailService.sendMail(new NotificationEmail("Please activate your account",
                 user.getEmail(),
                 "Thank you for your sigining up \n" +
@@ -44,7 +44,7 @@ public class AuthService {
                         "http://localhost:8080/api/auth/accountVerification/" + token));
     }
 
-    private String generateverificationToken(User user) {
+    private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
@@ -60,7 +60,6 @@ public class AuthService {
         fetchUserAndEnable(verificationToken.get());
     }
 
-    @Transactional
     private void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringRedditException("User not found with name" + username));
