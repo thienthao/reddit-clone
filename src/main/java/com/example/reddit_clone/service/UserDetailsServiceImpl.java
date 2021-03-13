@@ -2,7 +2,8 @@ package com.example.reddit_clone.service;
 
 import com.example.reddit_clone.model.User;
 import com.example.reddit_clone.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +17,11 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@Primary
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
